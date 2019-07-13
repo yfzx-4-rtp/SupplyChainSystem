@@ -1,0 +1,173 @@
+## Why unit testing
+
+1. Unit tests are a crucial part of continuous integration. They make your code a lot more reliable by focusing on small, isolated entities and making sure they always behave as expected. You can confidently iterate on your project without fear of breaking things.
+
+## Knowing What to Test
+
+2. A common approach of unit testing is to only focus on the public API (aka black box testing). By overlooking implementation details, you’re allowing internals to change without having to adapt tests. After all, what you want to do is make sure your public API won’t break. 
+
+3. we’ll only test what we can access from the outside of the component:
+
+ - user interactions
+ - props changes
+
+4. We won’t directly test computed properties, methods or hooks. These will be implicitly tested by testing the public interface.
+
+5. For UI components, we don't recommend aiming for complete line-based coverage, because it leads to too much focus on the internal implementation details of the components and could result in brittle tests.
+
+Instead, we recommend writing tests that assert your component's public interface, and treat its internals as a black box. A single test case would assert that some input (user interaction or change of props) provided to the component results in the expected output (render result or emitted custom events).
+
+The benefit of this approach is that as long as your component's public interface remains the same, your tests will pass no matter how the component's internal implementation changes over time.
+
+6. single responsiblity
+
+7. well documentation
+
+
+## Specific implementation methods
+
+> vue-unit-test 
+
+1. Shallow Rendering
+	shallowMount(Component)
+	
+	
+2. Test rendered HTML output of the component 
+	expect(wrapper.html()).toContain("<span class="count">0</span>")
+	
+	
+3. Simulating User Interaction
+	warpper.find('button').trigger('click')
+	
+4. Asserting Emitted Events
+
+	wrapper.vm.$emit("foo")
+	expect(wrapper.emitted().foo).toBeTruthy()
+
+5. Manipulating Component State
+	
+	wrapper.setData({ count: 10 })
+
+	wrapper.setProps({ foo: 'bar' })
+
+6. Mocking Props
+	
+	mount(Component, {
+		propsData: {
+		aProp: 'some value'
+		}
+	})
+
+==============================================================
+> SINON 
+
+7. SINON.js 
+	
+	Standalone test spies, stubs and mocks for JavaScript. Works with any unit testing framework.
+
+==============================================================
+>  JEST operations
+
+8. Using Matchers
+
+	- Common Matchers
+		toBe 
+			expect(2 + 2).toBe(4);
+		toEqual  recursively checks every field of an object or array.
+			expect(data).toEqual({one: 1, two: 2});
+
+	- Truthiness
+		In tests you sometimes need to distinguish between undefined, null, and false, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
+		
+		expect(n).toBeNull();
+		
+	- Numbers
+		Most ways of comparing numbers have matcher equivalents.
+		
+		expect(value).toBeGreaterThan(3);
+		
+		
+	- Strings
+		You can check strings against regular expressions with toMatch:
+
+		expect('team').not.toMatch(/I/);
+
+	- Arrays and iterables
+		You can check if an array or iterable contains a particular item using toContain:
+	
+		expect(shoppingList).toContain('beer');
+
+	- Exceptions
+		If you want to test that a particular function throws an error when it's called, use toThrow.
+	
+9. Testing Asynchronous Code
+
+	- Callbacks
+		The most common asynchronous pattern is callbacks.
+	
+		 Instead of putting the test in a function with an empty argument, use a single argument called done. 
+		 
+			test('the data is peanut butter', done => {
+			  function callback(data) {
+				expect(data).toBe('peanut butter');
+				done();
+			  }
+
+			  fetchData(callback);
+			});		 
+
+	- Promises
+		Just return a promise from your test, and Jest will wait for that promise to resolve. If the promise is rejected, the test will automatically fail.
+		 
+			test('the data is peanut butter', () => {
+			  return fetchData().then(data => {
+				expect(data).toBe('peanut butter');
+			  });
+			});		 
+
+	- Async/Await
+
+10. Setup and Teardown
+
+	- Repeating Setup For Many Tests
+	
+		If you have some work you need to do repeatedly for many tests, you can use beforeEach and afterEach.
+		
+		beforeEach and afterEach can handle asynchronous code in the same ways that tests can handle asynchronous code.
+		
+	- One-Time Setup
+		 Jest provides beforeAll and afterAll to handle this situation
+		 
+	- Scoping
+		When they are inside a describe block, the before and after blocks only apply to the tests within that describe block.
+		
+		
+11. Mock Functions
+
+	Mock functions make it easy to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with new, and allowing test-time configuration of return values.
+	
+
+	- Using a mock function
+	
+	To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
+	
+	const mockCallback = jest.fn(x => 42 + x);
+	forEach([0, 1], mockCallback);
+
+	// The mock function is called twice
+	expect(mockCallback.mock.calls.length).toBe(2);
+
+	// The first argument of the first call to the function was 0
+	expect(mockCallback.mock.calls[0][0]).toBe(0);
+
+	// The first argument of the second call to the function was 1
+	expect(mockCallback.mock.calls[1][0]).toBe(1);
+
+	// The return value of the first call to the function was 42
+	expect(mockCallback.mock.results[0].value).toBe(42);	
+	
+11. Snapshot Testing
+
+	Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
+	
+	A typical snapshot test case for a mobile app renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test.

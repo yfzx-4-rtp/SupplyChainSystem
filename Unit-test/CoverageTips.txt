@@ -1,0 +1,25 @@
+## Coverage
+
+### Why?
+
+Like the road sign that is "Not In Use" most of the code being written never gets executed.
+
+There are a few obvious issues with this:
+
+1. if un-tested code remains in the codebase i t can contain unknown behaviour e.g. bugs.
+2. untested features are more difficult to maintain without introducing breaking changes.
+3. un-tested code can clutter a project and accumulates technical debt that wastes time.
+
+### What?
+
+test coverage is a measure used to describe the degree to which the source code of a program is executed when a particular test suite runs.
+
+A program with high test coverage, measured as a percentage, has had more of its source code executed during testing, which suggests it has a lower chance of containing undetected software bugs compared to a program with low test coverage
+
+#### Basic coverage criteria(标准)
+
+- Function coverage - Has each function (or subroutine) in the program been called?
+- Statement coverage – Has each statement in the program been executed?
+- Edge coverage – has every edge in the Control flow graph been executed?
+- Branch coverage – Has each branch (also called DD-path) of each control structure (such as in if and case statements) been executed? For example, given an if statement, have both the true and false branches been executed? Notice that this one is a subset of Edge coverage.
+- Condition coverage (or predicate coverage) – Has each Boolean sub-expression evaluated both to true and false?
